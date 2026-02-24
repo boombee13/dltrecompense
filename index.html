@@ -1,5 +1,41 @@
-<script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbwoKn0sBWgxZVHenqQJn-ky8ttWxREAoZykk4qnCUMEsBP48KyXhCC2upufaPzlJXo/exec'; // อย่าลืมใส่ URL ของคุณกลับเข้าไปนะครับ
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบตรวจสอบรูปภาพและพิกัด</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f4f4f9; }
+        table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #0070f3; color: white; }
+        img { max-width: 100px; border-radius: 4px; }
+        a.btn { display: inline-block; padding: 6px 12px; background: #28a745; color: white; text-decoration: none; border-radius: 4px; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <h2>📍 รายการรูปภาพและสถานที่</h2>
+    <table id="dataTable">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Link</th>
+                <th>Sub District</th>
+                <th>District</th>
+                <th>Location</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td colspan="7" style="text-align:center;">กำลังโหลดข้อมูล...</td></tr>
+        </tbody>
+    </table>
+
+    <script>
+        // 👇 อย่าลืมเอา URL ของ Google Apps Script ของคุณมาใส่ตรงนี้นะครับ 👇
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwoKn0sBWgxZVHenqQJn-ky8ttWxREAoZykk4qnCUMEsBP48KyXhCC2upufaPzlJXo/exec'; 
 
         async function fetchData() {
             try {
@@ -7,33 +43,29 @@
                 const data = await response.json();
                 
                 const tbody = document.querySelector('#dataTable tbody');
-                tbody.innerHTML = ''; // เคลียร์ข้อความกำลังโหลด
+                tbody.innerHTML = ''; 
 
-                // ฟังก์ชันพิเศษ: ช่วยหาข้อมูลแม้ชื่อหัวคอลัมน์จะมีเว้นวรรค (Space) เกินมา
+                // ฟังก์ชันพิเศษ: ช่วยหาข้อมูลแม้ชื่อหัวคอลัมน์จะมีเว้นวรรคซ่อนอยู่
                 const getValue = (row, keyName) => {
-                    // ค้นหา key ที่ตัดเว้นวรรคหน้าหลังออกแล้วตรงกับที่เราต้องการ
                     const actualKey = Object.keys(row).find(k => k.trim() === keyName);
                     return actualKey ? row[actualKey] : '';
                 };
 
-                // กรองข้อมูล: เอาเฉพาะแถวที่มีข้อมูล "Date" หรือ "Link" จริงๆ
+                // กรองข้อมูล: เอาเฉพาะแถวที่มีข้อมูล Date หรือ Link
                 const validData = data.filter(row => {
                     const dateVal = getValue(row, 'Date');
                     const linkVal = getValue(row, 'Link');
                     return (dateVal !== '' && dateVal !== undefined) || (linkVal !== '' && linkVal !== undefined);
                 });
 
-                // ตรวจสอบว่ามีข้อมูลหรือไม่
                 if (validData.length === 0) {
-                     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 20px;">ไม่พบข้อมูล (ระบบอาจหาชื่อหัวคอลัมน์ไม่เจอ)</td></tr>';
+                     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 20px;">ไม่พบข้อมูลใน Sheet</td></tr>';
                      return;
                 }
 
-                // วนลูปสร้างตาราง
                 validData.forEach(row => {
                     const tr = document.createElement('tr');
                     
-                    // เตรียมลิงก์ (ถ้าไม่มีลิงก์ให้แสดงขีดแทน เพื่อไม่ให้ปุ่มพัง)
                     const linkImg = getValue(row, 'Link') ? `<a href="${getValue(row, 'Link')}" target="_blank">ดูรูปภาพ</a>` : '-';
                     const linkMap = getValue(row, 'Location') ? `<a href="${getValue(row, 'Location')}" class="btn" target="_blank">เปิด Google Maps</a>` : '-';
 
@@ -50,9 +82,11 @@
                 });
             } catch (error) {
                 console.error('Error fetching data:', error);
-                document.querySelector('#dataTable tbody').innerHTML = '<tr><td colspan="7" style="text-align:center; color: red;">เกิดข้อผิดพลาดในการโหลดข้อมูล API</td></tr>';
+                document.querySelector('#dataTable tbody').innerHTML = '<tr><td colspan="7" style="text-align:center; color: red;">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
             }
         }
 
         fetchData();
     </script>
+</body>
+</html>
