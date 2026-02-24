@@ -51,13 +51,13 @@
                     // หากชื่อต่างไปจากนี้ ให้เปลี่ยนชื่อตัวแปรในวงเล็บก้ามปูให้ตรงกันนะครับ
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td>${row['วันที่'] || '-'}</td>
-                        <td>${row['เวลา'] || '-'}</td>
-                        <td><a href="${row['link รูปภาพ']}" target="_blank">ดูรูปภาพ</a></td>
-                        <td>${row['ตำบล'] || '-'}</td>
-                        <td>${row['อำเภอ'] || '-'}</td>
-                        <td><a href="${row['link location']}" class="btn" target="_blank">เปิด Google Maps</a></td>
-                        <td>${row['สถานะ'] || 'รอดำเนินการ'}</td>
+                        <td>${row['Date'] || '-'}</td>
+                        <td>${row['Time'] || '-'}</td>
+                        <td><a href="${row['Link']}" target="_blank">ดูรูปภาพ</a></td>
+                        <td>${row['Sub District'] || '-'}</td>
+                        <td>${row['District'] || '-'}</td>
+                        <td><a href="${row['Location']}" class="btn" target="_blank">เปิด Google Maps</a></td>
+                        <td>${row['Status'] || 'รอดำเนินการ'}</td>
                     `;
                     tbody.appendChild(tr);
                 });
