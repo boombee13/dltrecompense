@@ -4,37 +4,139 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบตรวจสอบรูปภาพและพิกัด</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #f4f4f9; }
-        table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #0070f3; color: white; }
-        img { max-width: 100px; border-radius: 4px; }
-        a.btn { display: inline-block; padding: 6px 12px; background: #28a745; color: white; text-decoration: none; border-radius: 4px; font-size: 14px; }
+        /* กำหนดชุดสีพาสเทล */
+        :root {
+            --bg-color: #fcfaf8; 
+            --table-bg: #ffffff;
+            --header-bg: #ffd6c9; 
+            --header-text: #5e5c5c;
+            --row-hover: #fff3ed; 
+            --text-main: #6b6b6b;
+            --btn-map: #b5ead7; 
+            --btn-map-hover: #9bd6c2;
+            --link-color: #a2add0; 
+        }
+        
+        body { 
+            /* 👇 เปลี่ยนมาใช้ฟอนต์ Sarabun ตรงนี้ครับ 👇 */
+            font-family: 'Sarabun', sans-serif; 
+            padding: 30px 15px; 
+            background-color: var(--bg-color); 
+            color: var(--text-main);
+            margin: 0;
+            font-size: 15px; /* ปรับขนาดให้พอดีกับฟอนต์ Sarabun */
+        }
+
+        h2 {
+            text-align: center;
+            color: #7b7b7b;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .table-container {
+            border-radius: 16px;
+            overflow: hidden; 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+            background: var(--table-bg);
+            max-width: 1100px;
+            margin: 0 auto; 
+        }
+
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+
+        th, td { 
+            padding: 16px 20px; 
+            text-align: left; 
+            border-bottom: 1px solid #f4f4f4; 
+        }
+
+        th { 
+            background-color: var(--header-bg); 
+            color: var(--header-text); 
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        tr:last-child td {
+            border-bottom: none; 
+        }
+
+        tr:hover td {
+            background-color: var(--row-hover); 
+            transition: background 0.2s ease;
+        }
+
+        a.link-text {
+            color: var(--link-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        a.link-text:hover {
+            text-decoration: underline;
+        }
+
+        a.btn { 
+            display: inline-block; 
+            padding: 8px 18px; 
+            background: var(--btn-map); 
+            color: #5a7065; 
+            text-decoration: none; 
+            border-radius: 20px; 
+            font-size: 14px; 
+            font-weight: 600;
+            transition: background 0.3s ease, transform 0.1s ease;
+        }
+
+        a.btn:hover {
+            background: var(--btn-map-hover);
+            transform: translateY(-1px); 
+        }
+        
+        .status-badge {
+            background-color: #f1f1f1;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #777;
+        }
     </style>
 </head>
 <body>
 
-    <h2>📍 รายการรูปภาพและสถานที่</h2>
-    <table id="dataTable">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Link</th>
-                <th>Sub District</th>
-                <th>District</th>
-                <th>Location</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr><td colspan="7" style="text-align:center;">กำลังโหลดข้อมูล...</td></tr>
-        </tbody>
-    </table>
+    <h2>✨ รายการรูปภาพและสถานที่</h2>
+    
+    <div class="table-container">
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Link</th>
+                    <th>Sub District</th>
+                    <th>District</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td colspan="7" style="text-align:center; padding: 30px;">กำลังโหลดข้อมูล...</td></tr>
+            </tbody>
+        </table>
+    </div>
 
     <script>
-        // 👇 อย่าลืมเอา URL ของ Google Apps Script ของคุณมาใส่ตรงนี้นะครับ 👇
+        // 🚨 อย่าลืมแก้ตรงนี้ให้เป็น URL ของ Google Apps Script ของคุณนะครับ 🚨
         const API_URL = 'https://script.google.com/macros/s/AKfycbwoKn0sBWgxZVHenqQJn-ky8ttWxREAoZykk4qnCUMEsBP48KyXhCC2upufaPzlJXo/exec'; 
 
         async function fetchData() {
@@ -45,13 +147,11 @@
                 const tbody = document.querySelector('#dataTable tbody');
                 tbody.innerHTML = ''; 
 
-                // ฟังก์ชันพิเศษ: ช่วยหาข้อมูลแม้ชื่อหัวคอลัมน์จะมีเว้นวรรคซ่อนอยู่
                 const getValue = (row, keyName) => {
                     const actualKey = Object.keys(row).find(k => k.trim() === keyName);
                     return actualKey ? row[actualKey] : '';
                 };
 
-                // กรองข้อมูล: เอาเฉพาะแถวที่มีข้อมูล Date หรือ Link
                 const validData = data.filter(row => {
                     const dateVal = getValue(row, 'Date');
                     const linkVal = getValue(row, 'Link');
@@ -59,15 +159,16 @@
                 });
 
                 if (validData.length === 0) {
-                     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 20px;">ไม่พบข้อมูลใน Sheet</td></tr>';
+                     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 40px; color: #aaa;">ไม่พบข้อมูลใน Sheet</td></tr>';
                      return;
                 }
 
                 validData.forEach(row => {
                     const tr = document.createElement('tr');
                     
-                    const linkImg = getValue(row, 'Link') ? `<a href="${getValue(row, 'Link')}" target="_blank">ดูรูปภาพ</a>` : '-';
+                    const linkImg = getValue(row, 'Link') ? `<a href="${getValue(row, 'Link')}" class="link-text" target="_blank">ดูรูปภาพ</a>` : '-';
                     const linkMap = getValue(row, 'Location') ? `<a href="${getValue(row, 'Location')}" class="btn" target="_blank">เปิด Google Maps</a>` : '-';
+                    const statusText = getValue(row, 'Status') || 'รอดำเนินการ';
 
                     tr.innerHTML = `
                         <td>${getValue(row, 'Date') || '-'}</td>
@@ -76,13 +177,13 @@
                         <td>${getValue(row, 'Sub District') || '-'}</td>
                         <td>${getValue(row, 'District') || '-'}</td>
                         <td>${linkMap}</td>
-                        <td>${getValue(row, 'Status') || 'รอดำเนินการ'}</td>
+                        <td><span class="status-badge">${statusText}</span></td>
                     `;
                     tbody.appendChild(tr);
                 });
             } catch (error) {
                 console.error('Error fetching data:', error);
-                document.querySelector('#dataTable tbody').innerHTML = '<tr><td colspan="7" style="text-align:center; color: red;">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
+                document.querySelector('#dataTable tbody').innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 40px; color: #ff8b8b;">เกิดข้อผิดพลาดในการโหลดข้อมูล</td></tr>';
             }
         }
 
