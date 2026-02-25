@@ -74,6 +74,7 @@
                     <th>Road</th>
                     <th>Sub District</th>
                     <th>District</th>
+                    <th>Province</th>
                     <th>Location</th>
                     <th>Status</th>
                     <th>จัดการ</th> </tr>
@@ -116,6 +117,7 @@
                         road: getValue(row, 'Road'),
                         subDistrict: getValue(row, 'Sub District'),
                         district: getValue(row, 'District'),
+                        province: getValue(row, 'Province'),
                         location: getValue(row, 'Location'),
                         status: getValue(row, 'Status') || 'รอดำเนินการ'
                     };
@@ -153,6 +155,7 @@
                     <td>${row.road || '-'}</td>
                     <td>${row.subDistrict || '-'}</td>
                     <td>${row.district || '-'}</td>
+                    <td>${row.province || '-'}</td>
                     <td>${linkMap}</td>
                     <td><span class="status-badge status-text">${row.status}</span></td>
                     <td>${actionBtn}</td>
@@ -199,5 +202,6 @@
     </script>
 </body>
 </html>
+
 
 
