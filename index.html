@@ -71,6 +71,7 @@
                     <th>Date</th>
                     <th>Time</th>
                     <th>Link</th>
+                    <th>Road</th>
                     <th>Sub District</th>
                     <th>District</th>
                     <th>Location</th>
@@ -112,6 +113,7 @@
                         date: getValue(row, 'Date'),
                         time: getValue(row, 'Time'),
                         link: getValue(row, 'Link'),
+                        road: getValue(row, 'Road'),
                         subDistrict: getValue(row, 'Sub District'),
                         district: getValue(row, 'District'),
                         location: getValue(row, 'Location'),
@@ -148,6 +150,7 @@
                     <td>${row.date || '-'}</td>
                     <td>${row.time || '-'}</td>
                     <td>${linkImg}</td>
+                    <td>${row.road || '-'}</td>
                     <td>${row.subDistrict || '-'}</td>
                     <td>${row.district || '-'}</td>
                     <td>${linkMap}</td>
@@ -196,4 +199,5 @@
     </script>
 </body>
 </html>
+
 
